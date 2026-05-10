@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Calcium Intake Screener</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background: #0f1117;
+    color: #e8eaf0;
+    font-family: 'DM Sans', 'Segoe UI', sans-serif;
+    min-height: 100vh;
+    padding: 24px 20px;
+  }
+  .container { max-width: 560px; margin: 0 auto; }
+  .header { margin-bottom: 28px; }
+  .header .eyebrow { font-size: 11px; letter-spacing: 3px; color: #6b7080; text-transform: uppercase; margin-bottom: 6px; }
+  .header h1 { font-size: 22px; font-weight: 700; letter-spacing: -0.5px; }
+  .header .sub { font-size: 12px; color: #6b7080; margin-top: 4px; }
+  .card {
+    background: #1a1d27;
+    border: 1px solid #2a2d3a;
+    border-radius: 12px;
+    padding: 20px 24px;
+    margin-bottom: 16px;
+  }
+  .card-title { font-size: 11px; font-weight: 700; letter-spacing: 2px; color: #6b7080; text-transform: uppercase; margin-bottom: 16px; }
+  .row { margin-bottom: 18px; }
+  .row:last-child { margin-bottom: 0; }
+  .row label { font-size: 13px; color: #e8eaf0; display: block; margin-bottom: 8px; line-height: 1.5; }
+  .btn-group { display: flex; flex-wrap: wrap; gap: 6px; }
+  .btn-group button {
+    padding: 6px 14px;
+    border-radius: 8px;
+    border: 1.5px solid #2a2d3a;
+    background: transparent;
+    color: #6b7080;
+    font-size: 12px;
+    font-family: inherit;
+    cursor: pointer;
+    transition: all 0.15s;
+    font-weight: 400;
+  }
+  .btn-group button:hover { border-color: #4f9cf9; color: #4f9cf9; }
+  .btn-group button.active {
+    border-color: #4f9cf9;
+    background: rgba(79,156,249,0.13);
+    color: #4f9cf9;
+    font-weight: 600;
+  }
+  .result-card {
+    border-radius: 12px;
+    padding: 20px 24px;
+    margin-bottom: 16px;
+    display: none;
+  }
+  .result-top { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 12px; }
+  .result-eyebrow { font-size: 11px; letter-spacing: 2px; color: #6b7080; text-transform: uppercase; margin-bottom: 4px; }
+  .result-label { font-size: 16px; font-weight: 700; }
+  .result-mg { font-size: 28px; font-weight: 800; line-height: 1; text-align: right; }
+  .result-mg-label { font-size: 11px; color: #6b7080; text-align: right; }
+  .result-detail { font-size: 13px; color: #6b7080; line-height: 1.6; }
+  .progress-bar-bg { margin-top: 12px; height: 6px; border-radius: 3px; background: #2a2d3a; overflow: hidden; }
+  .progress-bar-fill { height: 100%; border-radius: 3px; transition: width 0.4s ease; }
+  .progress-labels { display: flex; justify-content: space-between; font-size: 10px; color: #6b7080; margin-top: 4px; }
+  .score-note { font-size: 11px; color: #6b7080; margin-top: 8px; }
+  .incomplete-msg { text-align: center; color: #6b7080; font-size: 13px; padding: 12px 0 20px; }
+  .reset-btn {
+    width: 100%; padding: 12px;
+    border-radius: 10px;
+    border: 1.5px solid #2a2d3a;
+    background: transparent;
+    color: #6b7080;
+    font-size: 13px;
+    font-family: inherit;
+    cursor: pointer;
+    margin-bottom: 20px;
+    letter-spacing: 0.5px;
+  }
+  .reset-btn:hover { border-color: #4f9cf9; color: #4f9cf9; }
+  .citation { font-size: 11px; color: #6b7080; text-align: center; line-height: 1.7; }
+  .hidden { display: none; }
+</style>
+</head>
+<body>
+<div class="container">
+
+  <div class="header">
+    <div class="eyebrow">Point-of-Care Tool</div>
+    <h1>Calcium Intake Screener</h1>
+    <div class="sub">8-item validated screener · Verbeke et al., EJCN 2024</div>
+  </div>
+
+  <!-- DAIRY -->
+  <div class="card">
+    <div class="card-title">Dairy</div>
+
+    <div class="row">
+      <label>Glass of milk (150 ml)</label>
+      <div class="btn-group" data-key="milk">
+        <button data-val="0">&lt; 3×/week</button>
+        <button data-val="1">3–4×/week</button>
+        <button data-val="2">1×/day</button>
+        <button data-val="4">2×/day</button>
+        <button data-val="6">3×/day</button>
+      </div>
+    </div>
+
+    <div class="row">
+      <label>Yoghurt, custard or quark (125 g)</label>
+      <div class="btn-group" data-key="yoghurt">
+        <button data-val="0">&lt; 3×/week</button>
+        <button data-val="1">3–4×/week</button>
+        <button data-val="2">1×/day</button>
+        <button data-val="4">2×/day</button>
+        <button data-val="6">3×/day</button>
+      </div>
+    </div>
+
+    <div class="row">
+      <label>Cheese — slices or dishes per week (30 g each)</label>
+      <div class="btn-group" data-key="cheese">
+        <button data-val="0">None</button>
+        <button data-val="0.5">1×/wk</button>
+        <button data-val="1">2×/wk</button>
+        <button data-val="1.5">3×/wk</button>
+        <button data-val="2">4×/wk</button>
+        <button data-val="2.5">5×/wk</button>
+        <button data-val="3">6×/wk</button>
+        <button data-val="3.5">7×/wk</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- FLUIDS -->
+  <div class="card">
+    <div class="card-title">Fluids</div>
+
+    <div class="row">
+      <label>Type of water consumed</label>
+      <div class="btn-group" data-key="waterType">
+        <button data-val="regular">Regular</button>
+        <button data-val="calciumRich">Calcium-rich (Contrex / Hepar)</button>
+      </div>
+    </div>
+
+    <div class="row" id="regularWaterRow" style="display:none">
+      <label>Glasses of regular water per day (200 ml)</label>
+      <div class="btn-group" data-key="water">
+        <button data-val="0">0–1 glass</button>
+        <button data-val="0.5">2–3</button>
+        <button data-val="1">4–5</button>
+        <button data-val="1.5">6–8</button>
+        <button data-val="2">9–10</button>
+      </div>
+    </div>
+
+    <div class="row" id="calciumWaterRow" style="display:none">
+      <label>Glasses of calcium-rich water per day (200 ml)</label>
+      <div class="btn-group" data-key="water">
+        <button data-val="0">None</button>
+        <button data-val="1">1/day</button>
+        <button data-val="2">2/day</button>
+        <button data-val="3">3/day</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- OTHER FOODS -->
+  <div class="card">
+    <div class="card-title">Other Foods</div>
+
+    <div class="row">
+      <label>Oranges per day</label>
+      <div class="btn-group" data-key="oranges">
+        <button data-val="0">None</button>
+        <button data-val="1">1/day</button>
+        <button data-val="2">2/day</button>
+        <button data-val="3">3/day</button>
+      </div>
+    </div>
+
+    <div class="row">
+      <label>Does the patient eat very little due to illness?</label>
+      <div class="btn-group" data-key="eatLittle">
+        <button data-val="yes">Yes</button>
+        <button data-val="no">No</button>
+      </div>
+    </div>
+
+    <div class="row">
+      <label>Does the patient eat vegetables, fruit and wholegrain bread almost daily?</label>
+      <div class="btn-group" data-key="vegFruit">
+        <button data-val="yes">Yes</button>
+        <button data-val="no">No</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- SUPPLEMENTS -->
+  <div class="card">
+    <div class="card-title">Current Supplementation</div>
+    <div class="row">
+      <label>Calcium supplements currently taken</label>
+      <div class="btn-group" data-key="supplement">
+        <button data-val="0">None</button>
+        <button data-val="5.5">500 mg/day</button>
+        <button data-val="11">1000 mg/day</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- RESULT -->
+  <div class="result-card" id="resultCard">
+    <div class="result-top">
+      <div>
+        <div class="result-eyebrow">Result</div>
+        <div class="result-label" id="resultLabel"></div>
+      </div>
+      <div>
+        <div class="result-mg" id="resultMg"></div>
+        <div class="result-mg-label">mg Ca/day</div>
+      </div>
+    </div>
+    <div class="result-detail" id="resultDetail"></div>
+    <div class="progress-bar-bg">
+      <div class="progress-bar-fill" id="progressFill"></div>
+    </div>
+    <div class="progress-labels">
+      <span>0</span><span>720</span><span>1200</span><span>2000 mg</span>
+    </div>
+    <div class="score-note" id="scoreNote"></div>
+  </div>
+
+  <div class="incomplete-msg" id="incompleteMsg">Complete all questions to see recommendation</div>
+
+  <button class="reset-btn" onclick="resetAll()">Reset for next patient</button>
+
+  <div class="citation">
+    Validated in Belgian osteoporosis patients (n=52) · Sensitivity 93%, PPV 85%<br>
+    Verbeke J, Laurent MR, Matthys C. Eur J Clin Nutr. 2024;78:301–306.
+  </div>
+
+</div>
+
+<script>
+  const state = {
+    milk: null, yoghurt: null, cheese: null,
+    waterType: null, water: null,
+    oranges: null, eatLittle: null, vegFruit: null,
+    supplement: null
+  };
+
+  const REQUIRED_KEYS = ['milk','yoghurt','cheese','waterType','water','oranges','eatLittle','vegFruit','supplement'];
+
+  document.querySelectorAll('.btn-group').forEach(group => {
+    const key = group.dataset.key;
+    group.querySelectorAll('button').forEach(btn => {
+      btn.addEventListener('click', () => {
+        group.querySelectorAll('button').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        const raw = btn.dataset.val;
+        state[key] = isNaN(raw) ? raw : parseFloat(raw);
+
+        if (key === 'waterType') {
+          state.water = null;
+          document.querySelectorAll('[data-key="water"]').forEach(g => {
+            g.querySelectorAll('button').forEach(b => b.classList.remove('active'));
+          });
+          document.getElementById('regularWaterRow').style.display = raw === 'regular' ? 'block' : 'none';
+          document.getElementById('calciumWaterRow').style.display = raw === 'calciumRich' ? 'block' : 'none';
+        }
+        calculate();
+      });
+    });
+  });
+
+  function calculate() {
+    const allDone = REQUIRED_KEYS.every(k => state[k] !== null);
+    document.getElementById('incompleteMsg').style.display = allDone ? 'none' : 'block';
+    document.getElementById('resultCard').style.display = allDone ? 'block' : 'none';
+    if (!allDone) return;
+
+    let s = 0;
+    s += state.milk;
+    s += state.yoghurt;
+    s += state.cheese;
+    s += state.water;
+    s += state.oranges;
+    if (state.eatLittle === 'no' && state.vegFruit === 'yes') s += 3;
+    s += state.supplement;
+
+    const mg = Math.round(s * 90);
+    const score = Math.round(s * 10) / 10;
+
+    let color, icon, label, detail;
+    if (s <= 7.5) {
+      color = '#e05c5c';
+      icon = '⬇';
+      label = 'Add 1000 mg/day calcium supplement';
+      detail = 'Dietary calcium insufficient — add 1000 mg supplement daily.';
+    } else if (s <= 13) {
+      color = '#f0a340';
+      icon = '→';
+      label = 'Add 500 mg/day calcium supplement';
+      detail = 'Dietary calcium borderline — add 500 mg supplement daily.';
+    } else if (s <= 22) {
+      color = '#4caf82';
+      icon = '✓';
+      label = 'Calcium intake adequate — no supplement needed';
+      detail = 'Dietary calcium meets requirements. Review in 12 months.';
+    } else {
+      color = '#c084fc';
+      icon = '⬆';
+      label = 'Calcium intake excessive — consider reducing';
+      detail = 'Total calcium exceeds safe upper limit. Reduce supplements or high-calcium foods.';
+    }
+
+    const card = document.getElementById('resultCard');
+    card.style.background = color + '18';
+    card.style.border = `1.5px solid ${color}55`;
+
+    document.getElementById('resultLabel').style.color = color;
+    document.getElementById('resultLabel').textContent = `${icon} ${label}`;
+    document.getElementById('resultMg').style.color = color;
+    document.getElementById('resultMg').textContent = mg;
+    document.getElementById('resultDetail').textContent = detail;
+    document.getElementById('progressFill').style.width = Math.min(100, (mg / 2000) * 100) + '%';
+    document.getElementById('progressFill').style.background = color;
+    document.getElementById('scoreNote').textContent = `Score: ${score} / 22 · 1 point ≈ 90 mg calcium`;
+  }
+
+  function resetAll() {
+    Object.keys(state).forEach(k => state[k] = null);
+    document.querySelectorAll('.btn-group button').forEach(b => b.classList.remove('active'));
+    document.getElementById('regularWaterRow').style.display = 'none';
+    document.getElementById('calciumWaterRow').style.display = 'none';
+    document.getElementById('resultCard').style.display = 'none';
+    document.getElementById('incompleteMsg').style.display = 'block';
+  }
+</script>
+</body>
+</html>
